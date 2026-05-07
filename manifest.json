@@ -1,0 +1,49 @@
+{
+  "name": "ScanHouse - Diagnóstico Inmobiliario",
+  "short_name": "ScanHouse",
+  "description": "Análisis inmobiliario con IA en segundos",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1E90DD",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231E90DD' width='192' height='192'/><text x='50%' y='50%' font-size='100' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central' font-family='system-ui'>SH</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231E90DD' width='192' height='192'/><text x='50%' y='50%' font-size='100' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central' font-family='system-ui'>SH</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23F5F5F5' width='540' height='720'/><rect fill='%231E90DD' width='540' height='120'/><text x='270' y='60' font-size='32' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>SCANHOUSE</text><rect fill='white' x='20' y='160' width='500' height='200' rx='12' stroke='%231E90DD' stroke-width='2' stroke-dasharray='5,5'/><text x='270' y='260' font-size='24' text-anchor='middle' dominant-baseline='central'>📷</text><text x='270' y='300' font-size='16' font-weight='bold' text-anchor='middle' dominant-baseline='central'>Sube fotos</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["lifestyle", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Nuevo análisis",
+      "short_name": "Analizar",
+      "description": "Inicia un nuevo análisis de vivienda",
+      "url": "/?action=new",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%231E90DD' width='96' height='96'/><text x='48' y='48' font-size='50' text-anchor='middle' dominant-baseline='central'>📷</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

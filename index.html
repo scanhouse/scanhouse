@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ScanHouse · Análisis visual con criterios técnicos">
+    <meta name="theme-color" content="#040D15">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ScanHouse">
+    
+    <title>ScanHouse · Diagnóstico Inmobiliario</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --ink:    #07111C;
+            --ink2:   #0C1B2A;
+            --ink3:   #112030;
+            --line:   #1D3348;
+            --line2:  #243E56;
+            --teal:   #00C896;
+            --teal2:  #00A87C;
+            --bone:   #EBF1FA;
+            --muted:  #5C7A92;
+            --dim:    #284058;
+            --red:    #F07070;
+            --amber:  #F5BC45;
+            --page:   #040D15;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--page);
+            font-family: 'Geist', sans-serif;
+            color: var(--bone);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--page);
+        }
+
+        .app-header {
+            padding: 16px 20px;
+            background: var(--ink);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo .ls { color: var(--bone); }
+        .logo .lh { color: var(--teal); }
+
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            overflow-y: auto;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .s1 {
+            padding: 40px 20px;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .s1-hero {
+            margin-top: 60px;
+        }
+
+        .s1-hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .s1-hero p {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: var(--ink);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Geist', sans-serif;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--teal2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .s2 {
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .upload-area {
+            background: var(--ink2);
+            border: 2px dashed var(--teal);
+            border-radius: 12px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            background: var(--ink3);
+            border-color: var(--teal2);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .upload-area h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--bone);
+        }
+
+        .upload-area p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        #photo-input {
+            display: none;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .photo-item {
+            position: relative;
+            background: var(--ink2);
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            border: 1px solid var(--line);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--red);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--bone);
+            font-family: 'Syne', sans-serif;
+        }
+
+        .form-group input {
+            background: var(--ink2);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--bone);
+            font-size: 14px;
+            font-family: 'Geist', sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.1);
+        }
+
+        .s3 {
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--line);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--bone);
+        }
+
+        .loading-text p {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--line);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 2px;
+            animation: progress 2.5s ease-in-out forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 10%; }
+            50% { width: 60%; }
+            100% { width: 100%; }
+        }
+
+        .s4, .s5 {
+            padding: 20px;
+            gap: 16px;
+        }
+
+        .score-card {
+            background: var(--ink2);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .score-value {
+            font-family: 'Geist Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 188, 69, 0.1);
+            color: var(--amber);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(245, 188, 69, 0.2);
+        }
+
+        .finding-card {
+            background: var(--ink2);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .finding-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--bone);
+            font-family: 'Syne', sans-serif;
+        }
+
+        .finding-tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .finding-tag.red {
+            border: 1px solid rgba(240, 112, 112, 0.2);
+            background: rgba(240, 112, 112, 0.1);
+            color: var(--red);
+        }
+
+        .finding-tag.amber {
+            border: 1px solid rgba(245, 188, 69, 0.2);
+            background: rgba(245, 188, 69, 0.1);
+            color: var(--amber);
+        }
+
+        .finding-tag.green {
+            border: 1px solid rgba(0, 200, 150, 0.2);
+            background: rgba(0, 200, 150, 0.1);
+            color: var(--teal);
+        }
+
+        .finding-desc {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .finding-cost {
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .cta-box {
+            background: rgba(0, 200, 150, 0.08);
+            border: 1px solid rgba(0, 200, 150, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .cta-box p {
+            font-size: 13px;
+            color: var(--bone);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .cta-box strong {
+            color: var(--teal);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--teal);
+            border: 1px solid var(--teal);
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Geist', sans-serif;
+            width: 100%;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 200, 150, 0.1);
+        }
+
+        .error-message {
+            background: rgba(240, 112, 112, 0.1);
+            border: 1px solid rgba(240, 112, 112, 0.2);
+            color: var(--red);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="app-header">
+            <div class="logo">
+                <span class="ls">SCAN</span><span class="lh">HOUSE</span>
+            </div>
+        </div>
+
+        <div class="app-content">
+            <!-- S1: WELCOME -->
+            <div id="s1" class="screen s1 active">
+                <div class="s1-hero">
+                    <h1>Diagnóstico visual<br>en segundos</h1>
+                    <p>Sube fotos de la vivienda. Recibe análisis técnico con criterios de aparejador, costes reales por zona y argumentos para negociar precio.</p>
+                </div>
+                <button class="btn-primary" onclick="goScreen(2)">Comenzar análisis</button>
+            </div>
+
+            <!-- S2: UPLOAD -->
+            <div id="s2" class="screen s2">
+                <div class="error-message" id="error-message"></div>
+                
+                <div class="upload-area" onclick="document.getElementById('photo-input').click()">
+                    <div class="upload-icon">📷</div>
+                    <h3>Sube fotos de la vivienda</h3>
+                    <p>Hasta 10 fotos · JPG o PNG · máx 20 MB</p>
+                </div>
+                <input type="file" id="photo-input" multiple accept="image/*">
+                
+                <div id="photo-grid" class="photo-grid"></div>
+
+                <div class="form-group">
+                    <label>Dirección o código postal</label>
+                    <input type="text" id="address-input" placeholder="Ej: Calle Gran Vía 28, Madrid">
+                </div>
+
+                <button class="btn-primary" id="analyze-btn" onclick="startAnalysis()">Analizar gratis</button>
+            </div>
+
+            <!-- S3: LOADING -->
+            <div id="s3" class="screen s3">
+                <div class="spinner"></div>
+                <div class="loading-text">
+                    <h2>Analizando fotos...</h2>
+                    <p>Motor IA con Claude Vision procesando</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- S4: RESULTS -->
+            <div id="s4" class="screen s4">
+                <div class="score-card">
+                    <div class="score-header">
+                        <div>
+                            <div class="score-label">Estado general</div>
+                            <div class="score-value" id="score-value">6.8</div>
+                        </div>
+                        <div class="status-badge" id="status-badge">⚠️ Revisar</div>
+                    </div>
+                    <div class="score-label" style="color: var(--bone); margin-bottom: 8px;">
+                        📍 <strong id="location-result">Barcelona</strong>
+                    </div>
+                </div>
+
+                <h3 style="font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-top: 16px; margin-bottom: 8px;">Hallazgos accionables</h3>
+                
+                <div id="findings-list"></div>
+
+                <div class="cta-box">
+                    <p><strong>Informe completo:</strong> Argumentos para negociar, estimaciones detalladas por partida, exportable en PDF.</p>
+                    <button class="btn-primary" onclick="downloadPDF()">💳 Descargar informe · €4,99</button>
+                </div>
+
+                <button class="btn-secondary" onclick="goScreen(1)">← Nuevo análisis</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let photos = [];
+        let currentAnalysis = null;
+
+        function goScreen(n) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('s' + n).classList.add('active');
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = msg;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 5000);
+        }
+
+        // PHOTO UPLOAD
+        document.getElementById('photo-input').addEventListener('change', (e) => {
+            photos = Array.from(e.target.files);
+            renderPhotos();
+        });
+
+        function renderPhotos() {
+            const grid = document.getElementById('photo-grid');
+            grid.innerHTML = photos.map((photo, idx) => `
+                <div class="photo-item">
+                    <img src="${URL.createObjectURL(photo)}" alt="Foto ${idx + 1}">
+                    <button class="photo-remove" onclick="removePhoto(${idx})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removePhoto(idx) {
+            photos.splice(idx, 1);
+            renderPhotos();
+        }
+
+        // ANALYSIS WITH CLAUDE VISION
+        async function startAnalysis() {
+            const address = document.getElementById('address-input').value.trim();
+            if (!photos.length) {
+                showError('Sube al menos una foto');
+                return;
+            }
+            if (!address) {
+                showError('Escribe la dirección');
+                return;
+            }
+
+            document.getElementById('analyze-btn').disabled = true;
+            goScreen(3);
+
+            try {
+                // Convertir fotos a base64
+                const photosBase64 = await Promise.all(
+                    photos.map(photo => new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(photo);
+                    }))
+                );
+
+                // Llamar a Netlify Function
+                const response = await fetch('/.netlify/functions/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        photos: photosBase64,
+                        address: address
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Error en análisis');
+                }
+
+                currentAnalysis = result;
+                displayResults();
+                goScreen(4);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error en análisis: ' + error.message);
+                goScreen(2);
+            } finally {
+                document.getElementById('analyze-btn').disabled = false;
+            }
+        }
+
+        function displayResults() {
+            if (!currentAnalysis) return;
+
+            const { score, address, findings } = currentAnalysis;
+
+            document.getElementById('score-value').textContent = score;
+            document.getElementById('location-result').textContent = address;
+
+            // Update badge
+            const badge = document.getElementById('status-badge');
+            if (score >= 8) {
+                badge.textContent = '✓ Bueno';
+                badge.style.color = 'var(--teal)';
+                badge.style.borderColor = 'rgba(0, 200, 150, 0.2)';
+                badge.style.background = 'rgba(0, 200, 150, 0.1)';
+            } else if (score >= 5) {
+                badge.textContent = '⚠️ Revisar';
+                badge.style.color = 'var(--amber)';
+                badge.style.borderColor = 'rgba(245, 188, 69, 0.2)';
+                badge.style.background = 'rgba(245, 188, 69, 0.1)';
+            } else {
+                badge.textContent = '🔴 Crítico';
+                badge.style.color = 'var(--red)';
+                badge.style.borderColor = 'rgba(240, 112, 112, 0.2)';
+                badge.style.background = 'rgba(240, 112, 112, 0.1)';
+            }
+
+            // Render findings
+            const findingsList = document.getElementById('findings-list');
+            findingsList.innerHTML = findings.map(f => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-title">${f.gravedad} ${f.patologia}</span>
+                        <span class="finding-tag ${f.color}">
+                            ${f.gravedad === '🔴' ? 'Crítico' : f.gravedad === '🟡' ? 'Revisar' : 'OK'}
+                        </span>
+                    </div>
+                    <div class="finding-desc">${f.descripcion || f.patron || 'Hallazgo detectado'}</div>
+                    <div class="finding-cost">€${f.coste_min.toLocaleString('es-ES')} – €${f.coste_max.toLocaleString('es-ES')}</div>
+                </div>
+            `).join('');
+        }
+
+        function downloadPDF() {
+            alert('Descarga PDF en desarrollo. Por ahora: Screenshot del informe o envia por email.');
+        }
+
+        // PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
