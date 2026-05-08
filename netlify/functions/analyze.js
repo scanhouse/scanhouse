@@ -5,8 +5,8 @@ exports.handler = async (event) => {
     const { image, address } = JSON.parse(event.body);
 
     const client = new Anthropic({
-      apiKey: process.env.CLAUDE_API_KEY,
-    });
+  apiKey: "sk-ant-v0-pDsPhiuLrHJXrJQ9d0jBqH3pqqRkKHf6AkAVLtVKqIoLxfZV6C6fWTEGMhqRZ9vTKEJp9VQJ5IVS7Yr-_u0wbA",
+});
 
     const message = await client.messages.create({
       model: "claude-3-5-sonnet-20241022",
