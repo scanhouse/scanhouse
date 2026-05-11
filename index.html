@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ScanHouse · Análisis visual con criterios técnicos">
+    <meta name="description" content="ScanHouse · Análisis de la vivienda y presupuesto reforma en 30 segundos">
     <meta name="theme-color" content="#040D15">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ScanHouse">
     
-    <title>ScanHouse · Diagnóstico Inmobiliario</title>
+    <title>ScanHouse · informe de costes en segundos</title>
     
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -489,7 +489,7 @@
             <div id="s1" class="screen s1 active">
                 <div class="s1-hero">
                     <h1>Diagnóstico visual<br>en segundos</h1>
-                    <p>Sube fotos de la vivienda. Recibe análisis técnico con criterios de aparejador, costes reales por zona y argumentos para negociar precio.</p>
+                    <p>Sube fotos de la vivienda. Recibe análisis técnico, costes reales por zona y argumentos para negociar precio.</p>
                 </div>
                 <button class="btn-primary" onclick="goScreen(2)">Comenzar análisis</button>
             </div>
@@ -520,7 +520,7 @@
                 <div class="spinner"></div>
                 <div class="loading-text">
                     <h2>Analizando fotos...</h2>
-                    <p>Motor IA con Claude Vision procesando</p>
+                    <p>Motor IA con base datos propia procesando</p>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill"></div>
@@ -688,7 +688,7 @@
                             ${f.gravedad === '🔴' ? 'Crítico' : f.gravedad === '🟡' ? 'Revisar' : 'OK'}
                         </span>
                     </div>
-                    <div class="finding-desc">${f.descripcion || f.patron || 'Hallazgo detectado'}</div>
+                    <div class="finding-desc">${f.descripcion || f.patron || 'problema detectado'}</div>
                     <div class="finding-cost">€${f.coste_min.toLocaleString('es-ES')} – €${f.coste_max.toLocaleString('es-ES')}</div>
                 </div>
             `).join('');
